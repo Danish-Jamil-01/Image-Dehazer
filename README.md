@@ -95,6 +95,10 @@ After installing the dependencies, you can use the Image Remover Tool as follows
 </figure>
 <br>
 
+## Contributing
+Contributions to this project are welcome. Feel free to open an issue or submit a pull request.
+<br>
+
 ## References
 
 - [Single Image Haze Removal using Dark Channel Prior](https://ieeexplore.ieee.org/document/5567108)
