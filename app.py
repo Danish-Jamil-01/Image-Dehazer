@@ -32,8 +32,8 @@ def index():
 @app.route('/process', methods=['POST'])
 def process_image():
     """
-    Receives an uploaded image, performs basic dehazing (without enhancement),
-    saves it, and returns the filename.
+    Receives an uploaded image, resizes it if necessary, performs basic 
+    dehazing, saves it, and returns the filename.
     """
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
@@ -43,10 +43,27 @@ def process_image():
 
     if file:
         try:
-            # Read image directly from the stream
             filestr = file.read()
             npimg = np.frombuffer(filestr, np.uint8)
             hazy_image_bgr = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+
+            # --- NEW: Image Resizing Logic to Save Memory ---
+            max_dimension = 1024
+            height, width = hazy_image_bgr.shape[:2]
+
+            if height > max_dimension or width > max_dimension:
+                # Determine the scaling factor
+                if height > width:
+                    scale_factor = max_dimension / height
+                else:
+                    scale_factor = max_dimension / width
+                
+                new_width = int(width * scale_factor)
+                new_height = int(height * scale_factor)
+                
+                # Resize the image
+                hazy_image_bgr = cv2.resize(hazy_image_bgr, (new_width, new_height), interpolation=cv2.INTER_AREA)
+            # --- End of New Logic ---
 
             # Perform dehazing WITHOUT post-enhancement
             dehazed_image_bgr = remover.process(hazy_image_bgr, enhance=False)
@@ -62,7 +79,6 @@ def process_image():
             return jsonify({'error': f'Server error: {e}'}), 500
 
     return jsonify({'error': 'Invalid file'}), 400
-
 
 @app.route('/enhance', methods=['POST'])
 def enhance_image():
