@@ -1,113 +1,60 @@
-# Image Dehazer
+# Image Dehazer Web Application
 
-Welcome to Image Dehazer, a Python tool for removing haze from images. This repository provides a comprehensive solution for enhancing the clarity and quality of hazy images.
+A modern web application built with Python and Flask that removes haze from images, featuring a dynamic, soft sky-blue neumorphic interface. The core image processing is based on the Dark Channel Prior algorithm, which effectively restores clear images from hazy conditions.
 
-<br>
+## 📸 Final Application
 
-## Features
-- Removal of haze from images using a guided filter-based algorithm.
-- Graphical user interface (GUI) for easy selection and processing of images.
-- Sample input images provided for testing the tool.
 
-<br>
+![Application Demo](https://github.com/user-attachments/assets/065d1d0d-3048-417c-97b8-00084974b20f)
 
-## File Structure
-The repository is organized as follows:
 
-- **gf.py:** Contains functions for guided filtering.
-- **haze_remover.py:** Implements the haze removal algorithm using guided filtering.
-- **main.py:** Provides a graphical user interface (GUI) for selecting and processing images.
-- **Sample Input Images:** Provides the images for testing and demonstration.
-- **img/:** Directory containing sample input images (**src.jpg**, **dark.jpg**, **trans.jpg**, **gtrans.jpg**) and the resulting dehazed image (**dst.jpg**).
+## 🚀 Features
 
-    1. **src.jpg:** Original hazy image, serving as input for haze removal.
-    2. **dark.jpg:** Dark channel prior of the original hazy image.
-    3. **trans.jpg:** Estimated transmission map of the original hazy image.
-    4. **gtrans.jpg:** Alternative transmission map estimation for comparison.
-    5. **dst.jpg:** Resulting dehazed image after applying Image Dehazer algorithm.
+- **Single-Click Dehazing:** Remove haze from any image with a simple button click.
+- **Contrast Enhancement:** Further improve the clarity and contrast of the dehazed image with a dedicated "Enhance" button.
+- **Modern Neumorphic UI:** A beautiful and responsive user interface with a soft sky-blue color palette and neumorphic design principles.
+- **Dynamic Resizing Layout:** The interface starts with a large input panel that dynamically resizes to be equal with the output panel after processing for an intuitive workflow.
+- **Interactive Image Upload:** Click to select or drag-and-drop an image directly into the upload area.
+- **Download Functionality:** Easily download the final processed image to your local machine.
 
-- **dehazed.jpg:** Resulting dehazed image after processing using the tool.
-- **requirements.txt:** To specify the dependencies required by the project.
+## 🛠️ Technology Stack
 
-<br>
+- **Backend:** Python, Flask, Gunicorn (for production).
+- **Image Processing:** OpenCV, NumPy.
+- **Frontend:** HTML5, CSS3, JavaScript (using the Fetch API for asynchronous requests).
 
-## Installation
-Getting started with Image Dehazer is simple. Follow these steps to set up the tool on your machine:
+## ⚙️ Setup and Local Installation
 
-1. **Clone Repository:** Clone this repository to your local machine:
+To run this project on your local machine, follow these steps:
 
-```bash
-    git clone https://github.com/Danish-Jamil-01/Image-Dehazer.git
-```
-<br>
+1.  **Clone the Repository**
+    ```bash
+    git clone <your-repository-url>
+    cd <repository-folder>
+    ```
 
-2. **Navigate to Directory:** Move into the cloned repository directory:
+2.  **Create and Activate a Virtual Environment**
+    ```bash
+    # For macOS/Linux
+    python3 -m venv venv
+    source venv/bin/activate
 
-```bash
-    cd Image-Dehazer
-```
-<br>
+    # For Windows
+    python -m venv venv
+    .\venv\Scripts\activate
+    ```
 
-3. **Install Dependencies:** Install the required dependencies using pip:
-
-```bash
+3.  **Install Dependencies**
+    Install all the required packages from the `requirements.txt` file.
+    ```bash
     pip install -r requirements.txt
-```
+    ```
 
-<br>
+4.  **Run the Application**
+    Start the Flask development server.
+    ```bash
+    python app.py
+    ```
 
-## Parameters by default
-- radius=7
-- omega=0.95
-- t0=0.1
-- r=20
-- eps=0.001
-
-<br>
-
-## Usage
-After installing the dependencies, you can use the Image Remover Tool as follows:
-
-1. **Run Script:** Execute the main.py script to launch the graphical user interface (GUI):
-```bash
-    python main.py
-```
-<br>
-
-2. **Select Image:** Use the GUI to select an image for haze removal. Alternatively, you can manually enter the image path.
-
-3. **Process Image:** Click the "Submit" button to initiate the haze removal process. The tool will display the dehazed image in the GUI.
-
-4. **Save Output:** The dehazed image will be saved as dehazed.jpg in the repository directory.
-
-<br>
-
-## Demo
-
-### Input:
-<figure class="half">
-    <img src="Sample Input Images/02_hazy.png">
-</figure>
-
-### Output:
-<figure class="half">
-    <img src="dehazed.jpg">
-</figure>
-<br>
-
-## Contributing
-Contributions to this project are welcome. Feel free to open an issue or submit a pull request.
-<br>
-
-## References
-
-- [Single Image Haze Removal using Dark Channel Prior](https://ieeexplore.ieee.org/document/5567108)
-- [Guided Image Filtering](https://ieeexplore.ieee.org/document/6319316)
-- [Single Image Dehazing via Conditional Generative Adversarial Network](https://ieeexplore.ieee.org/document/8578954)
-- [Single image dehazing based on learning of haze layers](https://www.sciencedirect.com/science/article/abs/pii/S092523122030028X)
-- [Dark channel prior in low frequency domain for time-efficient single image dehazing](https://www.tandfonline.com/doi/abs/10.1080/19479832.2024.2314503)
-
-<br>
- 
-## License
-This project is licensed under the [MIT License](LICENSE).
+5.  **Access the Application**
+    Open your web browser and navigate to `http://127.0.0.1:5000`.
