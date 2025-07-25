@@ -19,7 +19,7 @@ A modern web application built with Python and Flask that removes haze from imag
 
 ## 🛠️ Technology Stack
 
-- **Backend:** Python, Flask, Gunicorn (for production).
+- **Backend:** Python, Flask, Gunicorn
 - **Image Processing:** OpenCV, NumPy.
 - **Frontend:** HTML5, CSS3, JavaScript (using the Fetch API for asynchronous requests).
 
