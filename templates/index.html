@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Dehazer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <div class="neumorphic-box">
+            <input type="file" id="file-input" accept="image/*" class="hidden">
+            <label for="file-input" class="image-area" id="upload-area">
+                <div id="upload-placeholder">
+                    <p class="placeholder-text">Click or Drop Image Here</p>
+                </div>
+                <img id="image-preview" class="hidden" alt="Uploaded Image Preview">
+            </label>
+            <div class="actions">
+                <button id="change-btn" class="hidden">Upload another Image</button>
+                <button id="dehaze-btn" disabled>Dehaze</button>
+            </div>
+        </div>
+
+        <div class="neumorphic-box">
+            <div class="image-area" id="output-area">
+                <div id="output-placeholder">
+                    <p class="placeholder-text">Dehazed image will appear here</p>
+                </div>
+                <div id="loader" class="spinner hidden"></div>
+                <img id="output-image" class="hidden" alt="Processed Image">
+            </div>
+            <div class="actions">
+                <button id="enhance-btn" class="hidden">Enhance</button>
+                <a href="#" id="download-btn" class="download-btn hidden" download>Download</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        const uploadPlaceholder = document.getElementById('upload-placeholder');
+        const imagePreview = document.getElementById('image-preview');
+        
+        const outputArea = document.getElementById('output-area');
+        const outputPlaceholder = document.getElementById('output-placeholder');
+        const outputImage = document.getElementById('output-image');
+        const loader = document.getElementById('loader');
+
+        const dehazeBtn = document.getElementById('dehaze-btn');
+        const enhanceBtn = document.getElementById('enhance-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        // Get the new button element
+        const changeBtn = document.getElementById('change-btn');
+
+        let currentFile = null;
+        let currentOutputFilename = '';
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => e.preventDefault());
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // Add click listener for the new button
+        changeBtn.addEventListener('click', () => {
+            fileInput.click(); // Trigger the hidden file input
+        });
+
+        function handleFile(file) {
+            currentFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+                uploadPlaceholder.classList.add('hidden');
+                dehazeBtn.disabled = false;
+                
+                // Show the 'Change Image' button
+                changeBtn.classList.remove('hidden');
+
+                resetOutput();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetOutput() {
+            outputImage.classList.add('hidden');
+            outputPlaceholder.classList.remove('hidden');
+            enhanceBtn.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+            currentOutputFilename = '';
+            
+            document.querySelector('.main-container').classList.remove('layout-active');
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loader.classList.remove('hidden');
+                outputImage.classList.add('hidden');
+                outputPlaceholder.classList.add('hidden');
+            } else {
+                loader.classList.add('hidden');
+                outputImage.classList.remove('hidden');
+            }
+        }
+
+        // Dehaze button click
+        dehazeBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+            setLoading(true);
+            dehazeBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', currentFile);
+
+            try {
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                
+                currentOutputFilename = data.filename;
+                outputImage.src = `/display/outputs/${data.filename}`;
+                enhanceBtn.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                downloadBtn.href = outputImage.src;
+                
+                document.querySelector('.main-container').classList.add('layout-active');
+                
+            } catch (error) {
+                console.error('Dehaze Error:', error);
+                outputPlaceholder.innerText = 'Error processing image.';
+                outputPlaceholder.classList.remove('hidden');
+            } finally {
+                setLoading(false);
+                // Re-enable the dehaze button after processing is complete
+                dehazeBtn.disabled = false;
+            }
+        });
+
+        // Enhance button click
+        enhanceBtn.addEventListener('click', async () => {
+            if (!currentOutputFilename) return;
+            setLoading(true);
+            enhanceBtn.classList.add('hidden'); 
+
+            try {
+                const response = await fetch('/enhance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: currentOutputFilename })
+                });
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                currentOutputFilename = data.filename;
+                outputImage.src = `/display/outputs/${data.filename}?t=${new Date().getTime()}`;
+                downloadBtn.href = outputImage.src;
+
+            } catch (error) {
+                console.error('Enhance Error:', error);
+                outputPlaceholder.innerText = 'Error enhancing image.';
+                outputPlaceholder.classList.remove('hidden');
+            } finally {
+                setLoading(false);
+                enhanceBtn.classList.remove('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>

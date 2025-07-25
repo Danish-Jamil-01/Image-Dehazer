@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/danish/Desktop/Git Repo/Image-Dehazer/venv"
+set -gx VIRTUAL_ENV "/Users/danish/Desktop/Image-Dehazer/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

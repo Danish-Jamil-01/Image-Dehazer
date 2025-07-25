@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/Users/danish/Desktop/Git Repo/Image-Dehazer/venv/bin/python3.11" "$0" "$@"
-' '''
+#!/Users/danish/Desktop/Image-Dehazer/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
